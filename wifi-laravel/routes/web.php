@@ -21,5 +21,8 @@ Route::prefix('products')->name('products.')->group(function () {
     Route::get('/', [ProductsController::class, 'index'])->name('index');
     Route::get('/create', [ProductsController::class, 'create'])->name('create');
     Route::post('/create', [ProductsController::class, 'store'])->name('store');
-
+    Route::get('/edit/{id}', [ProductsController::class, 'edit'])->name('edit');
+    Route::post('/update', [ProductsController::class, 'update'])->name('update');
+//    Route::get('/delete/{id}', [ProductsController::class, 'destroy'])->name('delete');
+    Route::post('/delete', [ProductsController::class, 'destroy'])->name('delete');
 });

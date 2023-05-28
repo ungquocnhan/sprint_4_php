@@ -84,3 +84,4 @@ function getAllAnteing() {
     $anteingList = new Anteing();
     return $anteingList->getAll();
 }
+

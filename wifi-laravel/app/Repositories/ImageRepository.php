@@ -12,4 +12,10 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 interface ImageRepository extends RepositoryInterface
 {
     public function getImage();
+
+    public function saveImage($image);
+
+    public function getImageByIdProduct(int $id);
+
+    public function updateImage(array $image, mixed $id);
 }

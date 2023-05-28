@@ -40,4 +40,23 @@ class ImageRepositoryEloquent extends BaseRepository implements ImageRepository
     {
         return DB::table('images')->groupBy('product_id')->orderBy('product_id')->get();
     }
+
+    public function saveImage($image)
+    {
+        return DB::table('images')->insert($image);
+    }
+
+    public function getImageByIdProduct(int $id)
+    {
+        return DB::table('images')
+            ->where('product_id', $id)
+            ->get();
+    }
+
+    public function updateImage(array $image, $id)
+    {
+        return DB::table('images')
+            ->where('id', $id)
+            ->update($image);
+    }
 }

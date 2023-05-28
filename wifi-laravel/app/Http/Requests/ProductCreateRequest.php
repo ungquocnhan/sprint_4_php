@@ -24,78 +24,26 @@ class ProductCreateRequest extends FormRequest
     {
         return [
             'name' => 'required|min:10|max:255',
-            'quantity_exists' => ['required', 'integer', 'max:4', function ($value, $fail) {
-                if ($value < 0) {
-                    $fail('Quantity must be greater than 0');
-                }
-            }],
+            'quantity_exists' => ['required', 'integer'],
             'description' => 'required|min:20|max:2000',
-            'price' => ['required', 'integer', function ($value, $fail) {
-                if ($value < 0) {
-                    $fail('Price must be greater than 0');
-                }
-            }],
+            'price' => ['required', 'integer'],
             'size' => 'required|min:10|max:255',
-            'flag_promoted' => ['required', 'integer', function ($value, $fail) {
-                $message = 'Must choose promotion';
-                $this->chooseField($value, $fail, $message);
-            }],
-            'coverage_density_id' => ['required', 'integer', function ($value, $fail) {
-                $message = 'Must choose coverage density';
-                $this->chooseField($value, $fail, $message);
-            }],
-            'frequency_band_id' => ['required', 'integer', function ($value, $fail) {
-                $message = 'Must choose frequency band';
-                $this->chooseField($value, $fail, $message);
-            }],
-            'guarantee_id' => ['required', 'integer', function ($value, $fail) {
-                $message = 'Must choose guarantee';
-                $this->chooseField($value, $fail, $message);
-            }],
-            'made_in_id' => ['required', 'integer', function ($value, $fail) {
-                $message = 'Must choose made in';
-                $this->chooseField($value, $fail, $message);
-            }],
-            'manufacture_id' => ['required', 'integer', function ($value, $fail) {
-                $message = 'Must choose manufacturer';
-                $this->chooseField($value, $fail, $message);
-            }],
-            'promotion_id' => ['required', 'integer', function ($value, $fail) {
-                $message = 'Must choose percent promotion when have promoted';
-                $this->chooseField($value, $fail, $message);
-            }],
-            'speed_wifi_id' => ['required', 'integer', function ($value, $fail) {
-                $message = 'Must choose speed wifi';
-                $this->chooseField($value, $fail, $message);
-            }],
-            'standard_network_id' => ['required', 'integer', function ($value, $fail) {
-                $message = 'Must choose standard network';
-                $this->chooseField($value, $fail, $message);
-            }],
-            'type_anteing_id' => ['required', 'integer', function ($value, $fail) {
-                $message = 'Must choose type anteing';
-                $this->chooseField($value, $fail, $message);
-            }],
-            'type_device_id' => ['required', 'integer', function ($value, $fail) {
-                $message = 'Must choose type device';
-                $this->chooseField($value, $fail, $message);
-            }],
-            'user_connect_id' => ['required', 'integer', function ($value, $fail) {
-                $message = 'Must choose user connect';
-                $this->chooseField($value, $fail, $message);
-            }],
-            'button_support_id' => ['required', 'integer', function ($value, $fail) {
-                $message = 'Must choose button support';
-                $this->chooseField($value, $fail, $message);
-            }],
-            'port_id' => ['required', 'integer', function ($value, $fail) {
-                $message = 'Must choose port support';
-                $this->chooseField($value, $fail, $message);
-            }],
-            'anteing_id' => ['required', 'integer', function ($value, $fail) {
-                $message = 'Must choose quantity of anteing';
-                $this->chooseField($value, $fail, $message);
-            }],
+            'flag_promoted' => ['required', 'integer'],
+            'coverage_density_id' => ['required', 'integer'],
+            'frequency_band_id' => ['required', 'integer'],
+            'guarantee_id' => ['required', 'integer'],
+            'made_in_id' => ['required', 'integer'],
+            'manufacture_id' => ['required', 'integer'],
+            'promotion_id' => ['required', 'integer'],
+            'speed_wifi_id' => ['required', 'integer'],
+            'standard_network_id' => ['required', 'integer'],
+            'type_anteing_id' => ['required', 'integer'],
+            'type_device_id' => ['required', 'integer'],
+            'user_connect_id' => ['required', 'integer'],
+            'button_support_id' => ['required', 'integer'],
+            'port_id' => ['required', 'integer'],
+            'anteing_id' => ['required', 'integer'],
+//            'images' => 'image|mimes:jpeg,png,jpg|max:2048'
         ];
     }
 
@@ -115,10 +63,10 @@ class ProductCreateRequest extends FormRequest
     public function messages(): array
     {
         return[
-            'required' => ':attribute cannot be empty',
-            'min' => ':attribute cannot be smaller than :min characters',
-            'max' => ':attribute cannot be greater than :max characters',
-            'integer' => ':attribute must be a number',
+            'required' => ':attribute cannot be empty.',
+            'min' => ':attribute cannot be smaller than :min characters.',
+            'max' => ':attribute cannot be greater than :max characters.',
+            'integer' => ':attribute must be a number.',
         ];
     }
 
@@ -146,5 +94,91 @@ class ProductCreateRequest extends FormRequest
             'port_id' => 'Port',
             'anteing_id' => 'Quantity anteing',
         ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            $valueQuantity = $this->input('quantity_exists');
+            if ($valueQuantity <= 0) {
+                $validator->errors()->add('quantity_exists', 'Quantity must be greater than 0.');
+            } else if ($valueQuantity >= 10000) {
+                $validator->errors()->add('quantity_exists', 'Quantity cannot be greater than 10000.');
+            }
+
+            $valuePrice = $this->input('price');
+            if ($valuePrice <= 0) {
+                $validator->errors()->add('price', 'Price must be greater than 0.');
+            }
+
+            $keyCoverageDensity = 'coverage_density_id';
+            $messageCoverageDensity = 'Must choose coverage density.';
+            $this->customValid($keyCoverageDensity, $validator, $messageCoverageDensity);
+
+            $keyFrequencyBand = 'frequency_band_id';
+            $messageFrequencyBand = 'Must choose frequency band.';
+            $this->customValid($keyFrequencyBand, $validator, $messageFrequencyBand);
+
+            $keyGuarantee = 'guarantee_id';
+            $messageGuarantee = 'Must choose guarantee.';
+            $this->customValid($keyGuarantee, $validator, $messageGuarantee);
+
+            $keyMadeIn = 'made_in_id';
+            $messageMadeIn = 'Must choose made in.';
+            $this->customValid($keyMadeIn, $validator, $messageMadeIn);
+
+            $keyManufacture = 'manufacture_id';
+            $messageManufacture = 'Must choose manufacture.';
+            $this->customValid($keyManufacture, $validator, $messageManufacture);
+
+            $keyPromotion = 'promotion_id';
+            $messagePromotion = 'Must choose percent promotion when have promoted.';
+            $this->customValid($keyPromotion, $validator, $messagePromotion);
+
+            $keySpeedWifi = 'speed_wifi_id';
+            $messageSpeedWifi = 'Must choose speed wifi.';
+            $this->customValid($keySpeedWifi, $validator, $messageSpeedWifi);
+
+            $keyStandardNetwork = 'standard_network_id';
+            $messageStandardNetwork = 'Must choose standard network.';
+            $this->customValid($keyStandardNetwork, $validator, $messageStandardNetwork);
+
+            $keyTypeAnteing = 'type_anteing_id';
+            $messageTypeAnteing = 'Must choose type anteing.';
+            $this->customValid($keyTypeAnteing, $validator, $messageTypeAnteing);
+
+            $keyTypeDevice = 'type_device_id';
+            $messageTypeDevice = 'Must choose type device.';
+            $this->customValid($keyTypeDevice, $validator, $messageTypeDevice);
+
+            $keyUserConnect = 'user_connect_id';
+            $messageUserConnect = 'Must choose user connect.';
+            $this->customValid($keyUserConnect, $validator, $messageUserConnect);
+
+            $keyButtonSupport = 'button_support_id';
+            $messageButtonSupport = 'Must choose button support.';
+            $this->customValid($keyButtonSupport, $validator, $messageButtonSupport);
+
+            $keyPort = 'port_id';
+            $messagePort = 'Must choose port support.';
+            $this->customValid($keyPort, $validator, $messagePort);
+
+            $keyAnteing = 'anteing_id';
+            $messageAnteing = 'Must choose quantity of anteing.';
+            $this->customValid($keyAnteing, $validator, $messageAnteing);
+        });
+    }
+
+    /**
+     * @param $key
+     * @param $validator
+     * @param $message
+     * @return void
+     */
+    protected function customValid($key, $validator, $message): void
+    {
+        if ($this->input($key) == 0) {
+            $validator->errors()->add($key, $message);
+        }
     }
 }

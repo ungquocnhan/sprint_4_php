@@ -55,6 +55,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
                 'cd.name AS nameCoverageDensity',
                 'ma.name AS nameManufacture',
                 'im.url AS imageUrl')
+            ->whereNull('pr.deleted_at')
             ->groupBy('im.product_id')
             ->orderBy('im.product_id');
 
@@ -79,7 +80,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
 
     public function saveProduct($product)
     {
-        // TODO: Implement saveProduct() method.
+        return DB::table('products')->insert($product);
     }
 
     public function getById($id)
@@ -89,11 +90,15 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
 
     public function updateProducts($product, $id)
     {
-        // TODO: Implement updateProducts() method.
+        return DB::table('products')
+            ->where('id', $id)
+            ->update($product);
     }
 
     public function deleteProduct($id)
     {
-        // TODO: Implement deleteProduct() method.
+        return DB::table('products')
+            ->where('id', $id)
+            ->delete();
     }
 }

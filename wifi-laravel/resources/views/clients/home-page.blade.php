@@ -4,6 +4,7 @@
 @endsection
 
 @section('sidebar')
+    @parent
     <h3>Home sidebar</h3>
 @endsection
 

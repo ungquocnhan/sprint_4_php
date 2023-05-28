@@ -14,14 +14,14 @@
 
     @if($errors->any())
         <div class="alert alert-danger">
-            Data invalid.
+            Dữ liệu nhập vào đã có lỗi. Kiểm tra lại.
         </div>
     @endif
 
-    <form action="" method="post">
+    <form action="" method="post" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
-            <label for="name">Name</label>
+            <label for="name">Tên sản phẩm</label>
             <input type="text"
                    id="name"
                    name="name"
@@ -34,11 +34,11 @@
         </div>
 
         <div class="mb-3">
-            <label for="quantity_exists">Quantity</label>
+            <label for="quantity_exists">Số lượng</label>
             <input type="number"
                    id="quantity_exists"
                    name="quantity_exists"
-                   class="form-control"
+                   class="form-control @error('quantity_exists') is-invalid @enderror"
                    placeholder="Enter quantity product ..."
                    value="{{old('quantity_exists')}}">
             @error('quantity_exists')
@@ -47,12 +47,12 @@
         </div>
 
         <div class="mb-3">
-            <label for="description">Description</label>
+            <label for="description">Giới thiệu sản phẩm</label>
             <textarea type="text"
-                   id="description"
-                   name="description"
-                   class="form-control"
-                   placeholder="Enter description product ...">
+                      id="description"
+                      name="description"
+                      class="form-control"
+                      placeholder="Enter description product ...">
                 {{old('description')}}
             </textarea>
             @error('description')
@@ -61,7 +61,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="price">Price</label>
+            <label for="price">Giá sản phẩm</label>
             <input type="number"
                    id="price"
                    name="price"
@@ -74,7 +74,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="size">Size</label>
+            <label for="size">Kích thước</label>
             <input type="text"
                    id="size"
                    name="size"
@@ -87,7 +87,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="flag_promoted">Status promotion</label>
+            <label for="flag_promoted">Trạng thái khuyến mãi</label>
             <select name="flag_promoted" id="flag_promoted" class="form-control">
                 <option value="0" {{old('flag_promoted') == 0 ? 'selected' : false}}>Không khuyến mãi</option>
                 <option value="1" {{old('flag_promoted') == 1 ? 'selected' : false}}>Khuyến mãi</option>
@@ -95,49 +95,19 @@
         </div>
 
         <div class="mb-3">
-            <label for="coverage_density_id">Mật độ phủ sóng</label>
-            <select name="coverage_density_id" id="coverage_density_id" class="form-control">
-                <option value="0">Chọn mật độ phủ sóng</option>
-                @if(!empty(getAllCoverageDensity()))
-                    @foreach(getAllCoverageDensity() as $item)
+            <label for="promotion_id">Tỉ lệ khuyến mãi</label>
+            <select name="promotion_id" id="promotion_id" class="form-control">
+                <option value="0">Chọn tỉ lệ khuyến mãi</option>
+                @if(!empty(getAllPromotion()))
+                    @foreach(getAllPromotion() as $item)
                         <option value="{{$item->id}}"
-                            {{old('coverage_density_id') == $item->id ? 'selected' : false}}>{{$item->name}}</option>
+                            {{old('promotion_id') == $item->id ? 'selected' : false}}>
+                            {{$item->percent_promotion}}
+                        </option>
                     @endforeach
                 @endif
             </select>
-            @error('coverage_density_id')
-            <span style="color: red">{{$message}}</span>
-            @enderror
-        </div>
-
-        <div class="mb-3">
-            <label for="frequency_band_id">Băng tần</label>
-            <select name="frequency_band_id" id="frequency_band_id" class="form-control">
-                <option value="0">Chọn băng tần</option>
-                @if(!empty(getAllFrequencyBand()))
-                    @foreach(getAllFrequencyBand() as $item)
-                        <option value="{{$item->id}}"
-                            {{old('frequency_band_id') == $item->id ? 'selected' : false}}>{{$item->name}}</option>
-                    @endforeach
-                @endif
-            </select>
-            @error('frequency_band_id')
-            <span style="color: red">{{$message}}</span>
-            @enderror
-        </div>
-
-        <div class="mb-3">
-            <label for="guarantee_id">Bảo hành</label>
-            <select name="guarantee_id" id="guarantee_id" class="form-control">
-                <option value="0">Chọn thời gian bảo hành</option>
-                @if(!empty(getAllGuarantee()))
-                    @foreach(getAllGuarantee() as $item)
-                        <option value="{{$item->id}}"
-                            {{old('guarantee_id') == $item->id ? 'selected' : false}}>{{$item->name}}</option>
-                    @endforeach
-                @endif
-            </select>
-            @error('guarantee_id')
+            @error('promotion_id')
             <span style="color: red">{{$message}}</span>
             @enderror
         </div>
@@ -175,19 +145,17 @@
         </div>
 
         <div class="mb-3">
-            <label for="promotion_id">Tỉ lệ khuyến mãi</label>
-            <select name="promotion_id" id="promotion_id" class="form-control">
-                <option value="0">Chọn tỉ lệ khuyến mãi</option>
-                @if(!empty(getAllPromotion()))
-                    @foreach(getAllPromotion() as $item)
+            <label for="type_device_id">Loại thiết bị</label>
+            <select name="type_device_id" id="type_device_id" class="form-control">
+                <option value="0">Chọn loại thiết bị</option>
+                @if(!empty(getAllTypeDevice()))
+                    @foreach(getAllTypeDevice() as $item)
                         <option value="{{$item->id}}"
-                            {{old('promotion_id') == $item->id ? 'selected' : false}}>
-                            {{$item->percent_promotion}}
-                        </option>
+                            {{old('type_device_id') == $item->id ? 'selected' : false}}>{{$item->name}}</option>
                     @endforeach
                 @endif
             </select>
-            @error('promotion_id')
+            @error('type_device_id')
             <span style="color: red">{{$message}}</span>
             @enderror
         </div>
@@ -225,33 +193,17 @@
         </div>
 
         <div class="mb-3">
-            <label for="type_anteing_id">Tiêu chuẩn anten</label>
-            <select name="type_anteing_id" id="type_anteing_id" class="form-control">
-                <option value="0">Chọn tiêu chuẩn anten</option>
-                @if(!empty(getAllTypeAnteing()))
-                    @foreach(getAllTypeAnteing() as $item)
+            <label for="frequency_band_id">Băng tần</label>
+            <select name="frequency_band_id" id="frequency_band_id" class="form-control">
+                <option value="0">Chọn băng tần</option>
+                @if(!empty(getAllFrequencyBand()))
+                    @foreach(getAllFrequencyBand() as $item)
                         <option value="{{$item->id}}"
-                            {{old('type_anteing_id') == $item->id ? 'selected' : false}}>{{$item->name}}</option>
+                            {{old('frequency_band_id') == $item->id ? 'selected' : false}}>{{$item->name}}</option>
                     @endforeach
                 @endif
             </select>
-            @error('type_anteing_id')
-            <span style="color: red">{{$message}}</span>
-            @enderror
-        </div>
-
-        <div class="mb-3">
-            <label for="type_device_id">Loại thiết bị</label>
-            <select name="type_device_id" id="type_device_id" class="form-control">
-                <option value="0">Chọn loại thiết bị</option>
-                @if(!empty(getAllTypeDevice()))
-                    @foreach(getAllTypeDevice() as $item)
-                        <option value="{{$item->id}}"
-                            {{old('type_device_id') == $item->id ? 'selected' : false}}>{{$item->name}}</option>
-                    @endforeach
-                @endif
-            </select>
-            @error('type_device_id')
+            @error('frequency_band_id')
             <span style="color: red">{{$message}}</span>
             @enderror
         </div>
@@ -268,6 +220,22 @@
                 @endif
             </select>
             @error('user_connect_id')
+            <span style="color: red">{{$message}}</span>
+            @enderror
+        </div>
+
+        <div class="mb-3">
+            <label for="coverage_density_id">Mật độ phủ sóng</label>
+            <select name="coverage_density_id" id="coverage_density_id" class="form-control">
+                <option value="0">Chọn mật độ phủ sóng</option>
+                @if(!empty(getAllCoverageDensity()))
+                    @foreach(getAllCoverageDensity() as $item)
+                        <option value="{{$item->id}}"
+                            {{old('coverage_density_id') == $item->id ? 'selected' : false}}>{{$item->name}}</option>
+                    @endforeach
+                @endif
+            </select>
+            @error('coverage_density_id')
             <span style="color: red">{{$message}}</span>
             @enderror
         </div>
@@ -305,6 +273,22 @@
         </div>
 
         <div class="mb-3">
+            <label for="type_anteing_id">Tiêu chuẩn anten</label>
+            <select name="type_anteing_id" id="type_anteing_id" class="form-control">
+                <option value="0">Chọn tiêu chuẩn anten</option>
+                @if(!empty(getAllTypeAnteing()))
+                    @foreach(getAllTypeAnteing() as $item)
+                        <option value="{{$item->id}}"
+                            {{old('type_anteing_id') == $item->id ? 'selected' : false}}>{{$item->name}}</option>
+                    @endforeach
+                @endif
+            </select>
+            @error('type_anteing_id')
+            <span style="color: red">{{$message}}</span>
+            @enderror
+        </div>
+
+        <div class="mb-3">
             <label for="anteing_id">Số lượng anten</label>
             <select name="anteing_id" id="anteing_id" class="form-control">
                 <option value="0">Chọn số lượng anten</option>
@@ -320,7 +304,47 @@
             @enderror
         </div>
 
+        <div class="mb-3">
+            <label for="guarantee_id">Bảo hành</label>
+            <select name="guarantee_id" id="guarantee_id" class="form-control">
+                <option value="0">Chọn thời gian bảo hành</option>
+                @if(!empty(getAllGuarantee()))
+                    @foreach(getAllGuarantee() as $item)
+                        <option value="{{$item->id}}"
+                            {{old('guarantee_id') == $item->id ? 'selected' : false}}>{{$item->name}}</option>
+                    @endforeach
+                @endif
+            </select>
+            @error('guarantee_id')
+            <span style="color: red">{{$message}}</span>
+            @enderror
+        </div>
+
+        <div class="mb-3">
+            <div class="file-loading">
+                <label for="images">Hình ảnh sản phẩm</label>
+                <input type="file" class="form-control" id="images" name="images[]" multiple>
+            </div>
+        </div>
+
         <button type="submit" class="btn btn-primary">Lưu</button>
         <a href="{{route('products.index')}}" class="btn btn-warning">Quay lại</a>
     </form>
+@endsection
+
+@section('js')
+    <script>
+        $(document).ready(function() {
+            $('#images').fileinput({
+                theme: 'fas',
+                showUpload: false,
+                showCaption: false,
+                browserClass: 'btn btn-primary btn-lg',
+                fileType: 'any',
+                previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                overwriteInitial: false,
+                allowedFileExtensions: ["jpg", "gif", "png", "txt"]
+            });
+        });
+    </script>
 @endsection
